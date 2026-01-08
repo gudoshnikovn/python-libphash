@@ -1,0 +1,3 @@
+[submodule "native/libphash"]
+	path = native/libphash
+	url = https://github.com/gudoshnikovn/libphash.git
