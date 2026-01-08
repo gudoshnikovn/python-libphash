@@ -15,7 +15,9 @@ classifiers = [
   "Programming Language :: C",
   "Topic :: Multimedia :: Graphics",
 ]
-dependencies = ["cffi>=1.15.0"]
+dependencies = [
+    "cffi>=1.15.0",
+]
 [project.urls]
 "Homepage" = "https://github.com/gudoshnikovn/python-libphash"
 
