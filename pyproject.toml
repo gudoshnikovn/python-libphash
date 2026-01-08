@@ -15,9 +15,7 @@ classifiers = [
   "Programming Language :: C",
   "Topic :: Multimedia :: Graphics",
 ]
-dependencies = [
-    "cffi>=1.15.0",
-]
+dependencies = ["cffi>=1.15.0"]
 [project.urls]
 "Homepage" = "https://github.com/gudoshnikovn/python-libphash"
 
@@ -29,6 +27,17 @@ zip-safe = false
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.cibuildwheel]
+build-verbosity = 1
+
+skip = "cp36* cp37* cp38* pp*"
+
+before-build = "ls -R {project}/native/libphash"
+
+[tool.cibuildwheel.linux]
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
 
 [tool.mypy]
 strict = true
