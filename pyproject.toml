@@ -9,13 +9,15 @@ description = "High-performance perceptual hashing library (CFFI bindings)"
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
-authors = [{ name = "gudoshnikovn", email = "your.email@example.com" }]
+authors = [{ name = "gudoshnikovn", email = "gudoshnikov-na@yandex.ru" }]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: C",
   "Topic :: Multimedia :: Graphics",
 ]
 dependencies = ["cffi>=1.15.0"]
+[project.urls]
+"Homepage" = "https://github.com/gudoshnikovn/python-libphash"
 
 [project.optional-dependencies]
 dev = ["pytest", "mypy", "ruff"]
