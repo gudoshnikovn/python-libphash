@@ -6,7 +6,7 @@ from .exceptions import (
     DecodeError,
     InvalidArgumentError,
 )
-from .types import Digest, HashMethod
+from .ph_types import Digest, HashMethod
 from .context import ImageContext
 from .utils import hamming_distance, get_hash, compare_images
 

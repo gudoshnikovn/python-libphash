@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import cast
 from ._native import lib  # type: ignore
 from .context import ImageContext
-from .types import HashMethod
+from .ph_types import HashMethod
 
 
 def hamming_distance(h1: int, h2: int) -> int:

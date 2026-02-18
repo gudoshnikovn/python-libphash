@@ -1,6 +1,10 @@
 # python-libphash
 
+<<<<<<< Updated upstream
 High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash), a C library for perceptual image hashing.
+=======
+High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash) v1.6.1, a C library for perceptual image hashing.
+>>>>>>> Stashed changes
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -28,14 +32,29 @@ High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/
 *   A C compiler (GCC/Clang or MSVC)
 *   Python 3.8 or higher
 
+### Install from PyPI
+```bash
+pip install libphash
+# or using uv
+uv add libphash
+```
+
 ### Install from source
 ```bash
 git clone --recursive https://github.com/yourusername/python-libphash.git
 cd python-libphash
 pip install .
+# or using uv
+uv pip install .
 ```
 
 ## Quick Start
+
+### Quick Start (CLI)
+You can quickly compute a hash from the command line after installation:
+```bash
+python -m libphash.utils --path photo.jpg --method phash
+```
 
 ### Basic Usage
 ```python
@@ -54,6 +73,26 @@ with ImageContext("photo.jpg") as ctx:
 from libphash import compare_images
 distance = compare_images("image1.jpg", "image2.jpg", method=HashMethod.PHASH)
 print(f"Hamming Distance: {distance}")
+```
+
+### Advanced Configuration (New in v1.6.1)
+Fine-tune hashing algorithms for specific use cases. Note that hashes generated with different parameters are **not comparable**.
+
+```python
+with ImageContext("photo.jpg") as ctx:
+    # pHash (DCT) resolution
+    ctx.set_phash_params(dct_size=32, reduction_size=8)
+    
+    # Radial Hash precision
+    ctx.set_radial_params(projections=40, samples=128)
+    
+    # Block-based hashes (BMH) grid resolution
+    ctx.set_block_params(block_size=16)
+    
+    # Custom Grayscale weights (R, G, B)
+    ctx.set_gray_weights(38, 75, 15)
+    
+    print(f"Custom pHash: {ctx.phash:016x}")
 ```
 
 ### Working with Digests (Advanced Hashes)
@@ -81,7 +120,11 @@ with ImageContext("photo_v2.jpg") as ctx2:
 ### `ImageContext`
 The main class for loading images and computing hashes.
 *   `__init__(path=None, bytes_data=None)`: Load an image from a file path or memory.
-*   `set_gamma(gamma: float)`: Set gamma correction (useful for Radial Hash).
+*   `set_gamma(gamma: float)`: Set gamma correction.
+*   `set_gray_weights(r, g, b)`: Set custom RGB weights for grayscale conversion.
+*   `set_phash_params(dct_size, reduction_size)`: Configure pHash DCT resolution.
+*   `set_radial_params(projections, samples)`: Configure Radial Hash precision.
+*   `set_block_params(block_size)`: Configure BMH/mHash grid resolution.
 *   **Properties**: `ahash`, `dhash`, `phash`, `whash`, `mhash` (returns `int`).
 *   **Properties**: `bmh`, `color_hash`, `radial_hash` (returns `Digest`).
 

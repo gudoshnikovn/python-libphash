@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, final, Callable
 from ._native import ffi, lib
 from .exceptions import check_error
-from .types import Digest
+from .ph_types import Digest
 
 
 @final
@@ -49,6 +49,18 @@ class ImageContext:
 
     def set_gamma(self, gamma: float) -> None:
         lib.ph_context_set_gamma(self._ptr, float(gamma))
+
+    def set_gray_weights(self, r: int, g: int, b: int) -> None:
+        lib.ph_context_set_gray_weights(self._ptr, r, g, b)
+
+    def set_phash_params(self, dct_size: int, reduction_size: int) -> None:
+        lib.ph_context_set_phash_params(self._ptr, dct_size, reduction_size)
+
+    def set_radial_params(self, projections: int, samples: int) -> None:
+        lib.ph_context_set_radial_params(self._ptr, projections, samples)
+
+    def set_block_params(self, block_size: int) -> None:
+        lib.ph_context_set_block_params(self._ptr, block_size)
 
     # Внутренние хелперы теперь типизированы через Callable
     def _uint64_prop(self, func: Callable[[Any, Any], int]) -> int:
