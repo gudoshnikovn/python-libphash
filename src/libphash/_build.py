@@ -35,6 +35,10 @@ ffibuilder.cdef("""
     ph_error_t ph_create(ph_context_t **out_ctx);
     void ph_free(ph_context_t *ctx);
     void ph_context_set_gamma(ph_context_t *ctx, float gamma);
+    void ph_context_set_gray_weights(ph_context_t *ctx, int r, int g, int b);
+    void ph_context_set_phash_params(ph_context_t *ctx, int dct_size, int reduction_size);
+    void ph_context_set_radial_params(ph_context_t *ctx, int projections, int samples);
+    void ph_context_set_block_params(ph_context_t *ctx, int block_size);
 
     // Loading
     ph_error_t ph_load_from_file(ph_context_t *ctx, const char *filepath);
