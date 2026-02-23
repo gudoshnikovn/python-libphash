@@ -1,5 +1,6 @@
 import os
 import glob
+import platform
 from cffi import FFI
 
 ffibuilder = FFI()
@@ -137,7 +138,6 @@ if use_turbojpeg:
 # ARM (Mac) → libpng (NEON filters are faster)
 # x86 (Linux) → spng (43% faster inflate pipeline)
 # Override: LIBPHASH_USE_SPNG=1 or LIBPHASH_USE_LIBPNG=1
-import platform
 
 is_arm = platform.machine() in ("arm64", "aarch64")
 
