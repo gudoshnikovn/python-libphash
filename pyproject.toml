@@ -38,7 +38,7 @@ before-build = "ls -R {project}/native/libphash"
 manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
 # Install build dependencies for vendor libraries
-before-all = "yum install -y cmake nasm zlib-devel"
+before-all = "if command -v yum >/dev/null; then yum install -y cmake nasm zlib-devel; elif command -v dnf >/dev/null; then dnf install -y cmake nasm zlib-devel; elif command -v apk >/dev/null; then apk add cmake nasm zlib-dev; fi"
 
 [tool.cibuildwheel.macos]
 # macOS runners usually have cmake pre-installed, but we ensure it
