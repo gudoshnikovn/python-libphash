@@ -2,7 +2,7 @@ import pytest
 from libphash import ImageContext, HashMethod, get_hash
 
 
-@pytest.mark.parametrize("method_name", ["ahash", "dhash", "phash", "whash", "mhash"])
+@pytest.mark.parametrize("method_name", ["ahash", "dhash", "phash", "whash", "mhash", "color_hash"])
 def test_uint64_properties_consistency(sample_jpeg_bytes: bytes, method_name: str):
     """Verify that accessing hash properties multiple times returns consistent results."""
     with ImageContext(bytes_data=sample_jpeg_bytes) as ctx:

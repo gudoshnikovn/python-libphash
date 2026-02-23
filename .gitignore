@@ -20,13 +20,17 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+# Benchmarks
+benchmarks/data/
+benchmarks/augmented/
+benchmarks/augmented_png/
+*.prof
+benchmark_*.txt
 
 # --- Virtual Environments ---
 .env
 .venv
 env/
-venv/
-ENV/
 
 # --- C / C++ ---
 *.o

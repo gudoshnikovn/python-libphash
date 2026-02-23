@@ -10,10 +10,10 @@ def test_bmh_digest(sample_jpeg_bytes: bytes):
         assert len(digest.data) == 32
 
 
-def test_color_hash_digest(sample_jpeg_bytes: bytes):
+def test_color_moments_hash_digest(sample_jpeg_bytes: bytes):
     """Verify Color Moment Hash digest properties."""
     with ImageContext(bytes_data=sample_jpeg_bytes) as ctx:
-        digest = ctx.color_hash
+        digest = ctx.color_moments_hash
         assert digest.size == 9
         assert len(digest.data) == 9
 

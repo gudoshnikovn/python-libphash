@@ -1,6 +1,6 @@
 # python-libphash
 
-High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash) v1.6.1, a C library for perceptual image hashing.
+High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash) v1.9.0, a C library for perceptual image hashing.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -17,10 +17,11 @@ High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/
     *   `phash`: Perceptual Hash (DCT based)
     *   `whash`: Wavelet Hash
     *   `mhash`: Median Hash
+    *   `color_hash`: Packed 42-bit HSV-based color hash (compatible with `imagehash.colorhash`).
 *   **Digest Hashes (Multi-byte):**
-    *   `bmh`: Block Mean Hash
-    *   `color_hash`: Color Moment Hash
-    *   `radial_hash`: Radial Variance Hash
+    *   `bmh`: Block Mean Hash (256-bit digest).
+    *   `color_moments_hash`: Statistical color distribution digest (mean, variance, skewness, kurtosis).
+    *   `radial_hash`: Rotation-invariant Fourier-Mellin transform digest.
 
 ## Installation
 
@@ -71,8 +72,11 @@ distance = compare_images("image1.jpg", "image2.jpg", method=HashMethod.PHASH)
 print(f"Hamming Distance: {distance}")
 ```
 
-### Advanced Configuration (New in v1.6.1)
+### Advanced Configuration (New in v1.8.0)
 Fine-tune hashing algorithms for specific use cases. Note that hashes generated with different parameters are **not comparable**.
+
+*   **Ultra-Fast Image Decoding (v1.9.0)**: `libphash` now bundles high-performance decoders for JPEG and PNG. It uses `libjpeg-turbo` (TurboJPEG API) and `spng` or `libpng` with NEON/SSE SIMD acceleration. Image data is loaded via `mmap()` for zero-copy I/O between the file system and the decoder.
+    *   **Fallback**: Automatically falls back to `stb_image` if bundled decoders are disabled or for other formats.
 
 ```python
 with ImageContext("photo.jpg") as ctx:
@@ -84,6 +88,9 @@ with ImageContext("photo.jpg") as ctx:
     
     # Block-based hashes (BMH) grid resolution
     ctx.set_block_params(block_size=16)
+    
+    # Wavelet Hash (wHash) Mode: "fast" (default) or "full"
+    ctx.set_whash_mode("full")
     
     # Custom Grayscale weights (R, G, B)
     ctx.set_gray_weights(38, 75, 15)
@@ -121,6 +128,7 @@ The main class for loading images and computing hashes.
 *   `set_phash_params(dct_size, reduction_size)`: Configure pHash DCT resolution.
 *   `set_radial_params(projections, samples)`: Configure Radial Hash precision.
 *   `set_block_params(block_size)`: Configure BMH/mHash grid resolution.
+*   `set_whash_mode(mode="fast")`: Use "fast" (median) or "full" (ImageHash accurate 2D DWT).
 *   **Properties**: `ahash`, `dhash`, `phash`, `whash`, `mhash` (returns `int`).
 *   **Properties**: `bmh`, `color_hash`, `radial_hash` (returns `Digest`).
 
@@ -132,11 +140,16 @@ The main class for loading images and computing hashes.
 
 ### Utilities
 *   `hamming_distance(h1: int, h2: int)`: Returns the number of differing bits between two 64-bit integers.
+*   `ph_can_use_libjpeg()`: Returns `True` if `libjpeg-turbo` is enabled.
+*   `ph_can_use_libpng()`: Returns `True` if `libpng` or `spng` is enabled.
 *   `get_hash(path, method)`: Quick way to get a hash without manual context management.
 *   `compare_images(path1, path2, method)`: Returns the Hamming distance between two image files.
 
 ## Performance
-Since the core logic is implemented in C and uses `stb_image` for decoding, `libphash` is significantly faster than pure-Python alternatives. It also uses CFFI's "out-of-line" mode for minimal overhead.
+Since the core logic is implemented in C and uses SIMD-accelerated decoders, `libphash` is significantly faster than pure-Python alternatives.
+*   **JPEG Decoding**: ~2.0x faster than Pillow
+*   **PNG Decoding**: ~1.3x faster than Pillow.
+*   **Zero-Copy**: Uses `mmap()` to avoid kernel-user space copies.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.

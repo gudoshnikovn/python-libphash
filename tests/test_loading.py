@@ -19,8 +19,8 @@ def test_load_from_file(image_path: str):
 
 
 def test_load_from_file_not_found():
-    """Verify FileNotFoundError is raised for missing files."""
-    with pytest.raises(FileNotFoundError):
+    """Verify DecodeError is raised for missing files."""
+    with pytest.raises(DecodeError):
         ImageContext(path="non_existent.jpg")
 
 
