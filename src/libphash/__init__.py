@@ -8,7 +8,9 @@ from .exceptions import (
 )
 from .ph_types import Digest, HashMethod
 from .context import ImageContext
-from .utils import hamming_distance, get_hash, compare_images
+from .utils import hamming_distance, get_hash, compare_images, ph_can_use_libjpeg, ph_can_use_libpng
+
+__version__ = "1.3.0"
 
 __all__ = [
     "PhashError",
@@ -21,4 +23,6 @@ __all__ = [
     "hamming_distance",
     "get_hash",
     "compare_images",
+    "ph_can_use_libjpeg",
+    "ph_can_use_libpng",
 ]

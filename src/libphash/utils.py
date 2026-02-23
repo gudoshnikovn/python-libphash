@@ -26,3 +26,13 @@ def compare_images(
         h1 = cast(int, getattr(ctx1, method.value))
         h2 = cast(int, getattr(ctx2, method.value))
         return hamming_distance(h1, h2)
+
+
+def ph_can_use_libjpeg() -> bool:
+    """Check if libjpeg-turbo is available for fast JPEG decoding."""
+    return bool(lib.ph_can_use_libjpeg())
+
+
+def ph_can_use_libpng() -> bool:
+    """Check if libpng is available for fast PNG decoding."""
+    return bool(lib.ph_can_use_libpng())

@@ -1,68 +1,40 @@
-# Project Overview: python-libphash
+# Project Map: python-libphash (v1.3.0)
 
-`python-libphash` provides high-performance Python bindings for the `libphash` C library. It is designed for perceptual image hashing, which allows for image similarity detection by generating hashes that remain similar even if the image is resized, compressed, or slightly altered.
+This file serves as a high-level entry point for navigating the `python-libphash` project. 
 
-## System Architecture
+## Versioning & Core
+- **Python Package Version**: `1.3.0`
+- **Core C Engine (`libphash`)**: `1.9.0` (tracked via `native/libphash` submodule)
+  - **Supported Hashes**:
+    - **64-bit Integer Hashes**: `ahash`, `dhash`, `phash`, `whash`, `mhash`, `color_hash`.
+    - **Complex Digests**: `bmh`, `color_moments_hash`, `radial_hash`.
+- **Primary Goal**: High-performance perceptual hashing with zero-copy I/O and SIMD-accelerated decoding.
 
-The project is structured in three distinct layers to ensure both high performance and Pythonic ease of use:
+## Documentation Index
+| Topic | Location | Description |
+|:---|:---|:---|
+| **Quick Start** | [README.md](file:///Users/gudoshnikov_na/Programming/Python/python-libphash/README.md) | Installation, basic usage, and API overview. |
+| **System Architecture** | [architecture.md](file:///Users/gudoshnikov_na/Programming/C/libphash/docs/architecture.md) | C-engine design, mmap-based I/O, and component breakdown. |
+| **Algorithm Details** | [algorithms.md](file:///Users/gudoshnikov_na/Programming/C/libphash/docs/algorithms.md) | Mathematical foundations of pHash, dHash, aHash, etc. |
+| **Development Guide** | [development.md](file:///Users/gudoshnikov_na/Programming/C/libphash/docs/development.md) | Build instructions, coding standards, and testing procedures. |
+| **Build System** | [pyproject.toml](file:///Users/gudoshnikov_na/Programming/Python/python-libphash/pyproject.toml) | `cibuildwheel` config and build-time dependencies. |
 
-1.  **Native Layer (`native/libphash`)**: A standalone C library that implements the core hashing algorithms and image processing logic (using `stb_image` for decoding).
-2.  **Binding Layer (`src/libphash/_build.py`)**: Uses **CFFI (C Foreign Function Interface)** in out-of-line ABI mode to bridge the C library with Python. This layer defines the C structures and functions exposed to Python.
-3.  **Python Layer (`src/libphash/`)**: Provides a high-level, object-oriented API (via `ImageContext`) for developers. It handles memory management (using context managers) and provides convenient properties for accessing various hashes.
+## Project Structure
+- `native/libphash/`: Core C library (The "Engine").
+- `src/libphash/`: Python CFFI bindings and high-level `ImageContext` API.
+- `benchmarks/`: Production-ready benchmark suite.
+  - `utils.py`: Shared augmentation and data management logic.
+  - `generate_data.py`: CLI tool for generating test datasets (JPEG/PNG).
+  - `run_speed.py`: Performance throughput comparison.
+  - `run_quality.py`: Accuracy metrics (PR-AUC/F1) using augmented datasets.
+  - `data/jpeg/`: Consistently structured JPEG test data.
+  - `data/png/`: Consistently structured PNG test data.
+- `tests/`: API verification and stability tests.
 
-## Native Submodule Analysis
+## Key Performance Features
+- **Zero-Copy**: mmap-based loading directly into TurboJPEG/libpng.
+- **SIMD**: ARM NEON and x86 SSE/AVX2 acceleration for decoding and hashing.
+- **Fast DCT**: Optimized integer iDCT for pHash.
 
-The project includes a dependent repository as a git submodule:
-
-*   **Repository**: `https://github.com/gudoshnikovn/libphash.git`
-*   **Path**: `native/libphash`
-*   **Status**: Currently tracking version `1.6.1`.
-*   **Role**: It serves as the "engine" of the project. It contains the C source code for all supported hashing algorithms.
-
-### Submodule Structure:
-- `include/libphash.h`: The public API header defining the interface for FFI.
-- `src/`: The core implementation logic.
-    - `core.c`: Context management and lifecycle.
-    - `image.c`: Grayscale conversion and bilinear interpolation.
-    - `hashes/`: Individual algorithm implementations (pHash, dHash, aHash, etc.).
-- `vendor/`: Bundled dependencies like `stb_image.h` to ensure zero external binary dependencies.
-
-## Key Components & Workflow
-
-### 1. Image Processing Pipeline
-When an image is loaded via `ImageContext`, the following happens in the native layer:
-- The image is decoded into raw RGB/RGBA pixels.
-- It is converted to grayscale using configurable weights.
-- It is resized to the dimensions required by the specific hashing algorithm using bilinear interpolation for high fidelity.
-
-### 2. Supported Algorithms
-- **64-bit Integer Hashes**: `ahash`, `dhash`, `phash`, `whash`, `mhash`.
-- **Complex Digests**: `bmh` (Block Mean), `color_hash`, `radial_hash` (Rotation invariant).
-
-### 3. Memory Management
-The Python `ImageContext` class automatically calls `ph_free()` in the C layer when the context is closed or the object is garbage collected, preventing memory leaks of large image buffers.
-
-## File Structure Breakdown
-
-```text
-.
-├── native/libphash/      # [SUBMODULE] Core C implementation
-│   ├── include/          # Public C headers
-│   └── src/              # C source code (Core & Algorithms)
-├── src/libphash/         # Python package source
-│   ├── _build.py         # CFFI build script (C-Python bridge)
-│   ├── context.py        # High-level ImageContext API
-│   ├── ph_types.py       # Python representations of C types (Digest, etc.)
-├── tests/                # Comprehensive pytest suite
-├── pyproject.toml        # Build system configuration
-└── README.md             # Standard usage documentation
-```
-
-## Development Environment
-
-The project is managed using **uv**. It is recommended to use `uv` for all development tasks (installing dependencies, running tests, building).
-
-### Commands:
-- **Build/Install**: `uv pip install -e .`
-- **Run Tests**: `uv run --with pytest pytest`
-- **Lint/Check**: `uv run ruff check .`
+---
+*Last Updated: 2026-02-23*

@@ -12,6 +12,7 @@ class HashMethod(Enum):
     PHASH = "phash"
     WHASH = "whash"
     MHASH = "mhash"
+    COLORHASH = "color_hash"
 
 
 @final

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-libphash"
-version = "1.2.0"
+version = "1.3.0"
 description = "High-performance perceptual hashing library (CFFI bindings)"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -21,6 +21,7 @@ dependencies = ["cffi>=1.15.0"]
 
 [project.optional-dependencies]
 dev = ["pytest", "mypy", "ruff"]
+benchmark = ["imagehash", "Pillow", "pandas", "tabulate"]
 
 [tool.setuptools]
 zip-safe = false
@@ -30,14 +31,18 @@ where = ["src"]
 
 [tool.cibuildwheel]
 build-verbosity = 1
-
 skip = "cp36* cp37* cp38* pp*"
-
 before-build = "ls -R {project}/native/libphash"
 
 [tool.cibuildwheel.linux]
 manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
+# Install build dependencies for vendor libraries
+before-all = "yum install -y cmake nasm zlib-devel"
+
+[tool.cibuildwheel.macos]
+# macOS runners usually have cmake pre-installed, but we ensure it
+before-all = "brew install cmake nasm || true"
 
 [tool.mypy]
 strict = true
