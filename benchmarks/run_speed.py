@@ -54,14 +54,13 @@ def run_speed_test(image_paths, workers=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run speed benchmarks.")
-    parser.add_argument("--format", choices=["jpeg", "png"], default="jpeg")
+    parser.add_argument("--format", choices=["jpeg", "png", "webp"], default="jpeg")
     parser.add_argument("--limit", type=int, default=200)
     args = parser.parse_args()
 
     data_dir = f"benchmarks/data/{args.format}"
-    files = get_base_files(data_dir, "jpg" if args.format == "jpeg" else "png")[
-        : args.limit
-    ]
+    ext = "jpg" if args.format == "jpeg" else args.format
+    files = get_base_files(data_dir, ext)[: args.limit]
 
     if not files:
         print(f"No files found in {data_dir}. Run generate_data.py first.")

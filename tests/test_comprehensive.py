@@ -31,7 +31,7 @@ def test_load_grayscale_logic(image_path: str):
 
 def test_error_invalid_file():
     """Verify exception on missing file."""
-    with pytest.raises(PhashError, match="Failed to decode image"):
+    with pytest.raises(PhashError, match="Image decoding failed"):
         ImageContext("non_existent_file.jpg")
 
 

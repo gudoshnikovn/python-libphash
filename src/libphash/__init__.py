@@ -16,7 +16,7 @@ from .utils import (
     ph_can_use_libpng,
 )
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 
 __all__ = [
     "PhashError",
