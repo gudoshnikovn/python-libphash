@@ -4,7 +4,7 @@ import pytest
 
 def get_test_images_dir() -> Path:
     """Locate the directory containing test images relative to this file."""
-    return Path(__file__).resolve().parent.parent / "native" / "libphash" / "tests"
+    return Path(__file__).resolve().parent.parent / "native" / "libphash" / "tests" / "data"
 
 
 @pytest.fixture

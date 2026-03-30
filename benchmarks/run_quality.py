@@ -16,10 +16,11 @@ import imagehash
 
 # Algorithms configuration
 ALGORITHMS = [
-    ("aHash", imagehash.average_hash, "ahash"),
-    ("dHash", imagehash.dhash, "dhash"),
-    ("pHash", imagehash.phash, "phash"),
-    ("wHash", imagehash.whash, "whash"),
+    ("aHash", imagehash.average_hash, "ahash", None),
+    ("dHash", imagehash.dhash, "dhash", None),
+    ("pHash", imagehash.phash, "phash", None),
+    ("wHash (Fast)", imagehash.whash, "whash", "fast"),
+    ("wHash (Full)", imagehash.whash, "whash", "full"),
 ]
 
 
@@ -48,9 +49,9 @@ def evaluate_quality(files, ground_truth):
     hashes = {f: {} for f in files}
 
     for p in tqdm(files, desc="Computing hashes"):
-        for name, ih_func, lp_attr in ALGORITHMS:
+        for name, ih_func, lp_attr, mode in ALGORITHMS:
             hashes[p][f"{name}_ih"] = get_hash_ih(p, ih_func)
-            hashes[p][f"{name}_lp"] = get_hash_lp(p, lp_attr)
+            hashes[p][f"{name}_lp"] = get_hash_lp(p, lp_attr, mode=mode)
 
     n = len(files)
     y_true = []
@@ -114,18 +115,18 @@ def evaluate_quality(files, ground_truth):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run quality benchmarks.")
-    parser.add_argument("--format", choices=["jpeg", "png"], default="jpeg")
+    parser.add_argument("--format", choices=["jpeg", "png", "webp"], default="jpeg")
     parser.add_argument("--limit", type=int, default=50, help="Base images limit")
     args = parser.parse_args()
 
     base_dir = f"benchmarks/data/{args.format}"
-    ext = "jpg" if args.format == "jpeg" else "png"
+    ext = "jpg" if args.format == "jpeg" else args.format
     base_files = get_base_files(base_dir, ext)[: args.limit]
 
     if not base_files:
         print(f"No base images in {base_dir}. Run generate_data.py first.")
     else:
         files, gt = prepare_quality_dataset(
-            base_files, base_dir, "JPEG" if args.format == "jpeg" else "PNG"
+            base_files, base_dir, args.format.upper()
         )
         evaluate_quality(files, gt)

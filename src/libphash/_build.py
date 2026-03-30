@@ -17,8 +17,8 @@ ffibuilder.cdef("""
         PH_ERR_ALLOCATION_FAILED = -1,
         PH_ERR_DECODE_FAILED = -2,
         PH_ERR_INVALID_ARGUMENT = -3,
+        PH_ERR_NOT_IMPLEMENTED = -4,
         PH_ERR_EMPTY_IMAGE = -5,
-        ...
     } ph_error_t;
 
     typedef enum {
@@ -36,6 +36,8 @@ ffibuilder.cdef("""
         uint8_t reserved[7];
     } ph_digest_t;
 
+    const char *ph_get_error_string(ph_error_t err);
+
     // Lifecycle
     const char *ph_version(void);
     ph_error_t ph_create(ph_context_t **out_ctx);
@@ -50,6 +52,7 @@ ffibuilder.cdef("""
 
     int ph_can_use_libjpeg(void);
     int ph_can_use_libpng(void);
+    int ph_can_use_webp(void);
 
     // Loading
     ph_error_t ph_load_from_file(ph_context_t *ctx, const char *filepath);
@@ -86,6 +89,7 @@ native_dir = os.path.join(project_root, "native", "libphash")
 is_minimal = os.environ.get("LIBPHASH_MINIMAL", "0") == "1"
 use_turbojpeg = not is_minimal and os.environ.get("LIBPHASH_NO_TURBOJPEG", "0") != "1"
 use_libpng = not is_minimal and os.environ.get("LIBPHASH_NO_LIBPNG", "0") != "1"
+use_webp = not is_minimal and os.environ.get("LIBPHASH_NO_WEBP", "0") != "1"
 
 extra_compile_defs = []
 extra_include_dirs = []
@@ -201,10 +205,52 @@ elif use_spng:
     extra_include_dirs.append(os.path.relpath(spng_dir, project_root))
     extra_libs.append("z")
 
+# --- Build libwebp (static, optional) ---
+if use_webp:
+    webp_dir = os.path.join(native_dir, "vendor", "libwebp")
+    webp_build = os.path.join(webp_dir, "build")
+    webp_lib = os.path.join(webp_build, "libwebpdecoder.a")
+
+    if not os.path.exists(webp_lib):
+        import subprocess
+        import multiprocessing
+
+        os.makedirs(webp_build, exist_ok=True)
+        subprocess.check_call(
+            [
+                "cmake",
+                "..",
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DWEBP_BUILD_ANIM_UTILS=OFF",
+                "-DWEBP_BUILD_CWEBP=OFF",
+                "-DWEBP_BUILD_DWEBP=OFF",
+                "-DWEBP_BUILD_GIF2WEBP=OFF",
+                "-DWEBP_BUILD_IMG2WEBP=OFF",
+                "-DWEBP_BUILD_VWEBP=OFF",
+                "-DWEBP_BUILD_WEBPINFO=OFF",
+                "-DWEBP_BUILD_LIBWEBPMUX=OFF",
+                "-DWEBP_BUILD_WEBPMUX=OFF",
+                "-DWEBP_BUILD_EXTRAS=OFF",
+                "-DBUILD_SHARED_LIBS=OFF",
+                "-DWEBP_LINK_STATIC=ON",
+                "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+            ],
+            cwd=webp_build,
+        )
+        subprocess.check_call(
+            ["make", f"-j{multiprocessing.cpu_count()}", "webpdecoder"], cwd=webp_build
+        )
+
+    extra_compile_defs.append("-DPH_USE_WEBP")
+    extra_include_dirs.append(os.path.relpath(os.path.join(webp_dir, "src"), project_root))
+    extra_link_args.append(os.path.relpath(webp_lib, project_root))
+
 # --- Collect sources ---
 sources = []
 sources.extend(glob.glob(os.path.join(native_dir, "src", "*.c")))
 sources.extend(glob.glob(os.path.join(native_dir, "src", "hashes", "*.c")))
+sources.extend(glob.glob(os.path.join(native_dir, "src", "image", "*.c")))
+sources.extend(glob.glob(os.path.join(native_dir, "src", "loaders", "*.c")))
 
 # spng is a single .c file compiled alongside our sources
 if use_spng:
@@ -214,6 +260,7 @@ if use_spng:
 source_files = [os.path.relpath(s, project_root) for s in sources]
 include_dirs = [
     os.path.relpath(os.path.join(native_dir, "include"), project_root),
+    os.path.relpath(os.path.join(native_dir, "src"), project_root),
 ] + extra_include_dirs
 
 compile_args = (

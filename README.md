@@ -1,6 +1,6 @@
 # python-libphash
 
-High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash) v1.9.0, a C library for perceptual image hashing.
+High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash), a C library for perceptual image hashing.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -72,11 +72,11 @@ distance = compare_images("image1.jpg", "image2.jpg", method=HashMethod.PHASH)
 print(f"Hamming Distance: {distance}")
 ```
 
-### Advanced Configuration (New in v1.8.0)
+### Customizing Algorithms & Performance
 Fine-tune hashing algorithms for specific use cases. Note that hashes generated with different parameters are **not comparable**.
 
-*   **Ultra-Fast Image Decoding (v1.9.0)**: `libphash` now bundles high-performance decoders for JPEG and PNG. It uses `libjpeg-turbo` (TurboJPEG API) and `spng` or `libpng` with NEON/SSE SIMD acceleration. Image data is loaded via `mmap()` for zero-copy I/O between the file system and the decoder.
-    *   **Fallback**: Automatically falls back to `stb_image` if bundled decoders are disabled or for other formats.
+*   **Ultra-Fast Image Decoding**: `libphash` bundles high-performance decoders for JPEG, PNG, and WebP. It uses `libjpeg-turbo` (TurboJPEG API), `libpng`/`spng`, and `libwebp` with SIMD acceleration (SSE/NEON/AVX2). Image data is loaded via `mmap()` for zero-copy I/O between the file system and the decoder.
+    *   **Fallback**: Automatically falls back to `stb_image` for other formats or if bundled decoders are disabled.
 
 ```python
 with ImageContext("photo.jpg") as ctx:
@@ -146,10 +146,19 @@ The main class for loading images and computing hashes.
 *   `compare_images(path1, path2, method)`: Returns the Hamming distance between two image files.
 
 ## Performance
-Since the core logic is implemented in C and uses SIMD-accelerated decoders, `libphash` is significantly faster than pure-Python alternatives.
-*   **JPEG Decoding**: ~2.0x faster than Pillow
-*   **PNG Decoding**: ~1.3x faster than Pillow.
+Since the core logic is implemented in C and uses SIMD-accelerated decoders (SSE4.2, AVX2, NEON), `libphash` is significantly faster than pure-Python alternatives.
+
+*   **JPEG Decoding**: ~2.0x–6.0x faster than Pillow (TurboJPEG API).
+*   **PNG Decoding**: ~1.3x faster than Pillow (spng/libpng).
+*   **WebP Decoding**: ~2.5x faster than Pillow (Native `libwebp`).
 *   **Zero-Copy**: Uses `mmap()` to avoid kernel-user space copies.
+
+| Algorithm | imagehash (Pillow) | libphash (Native) | Speedup |
+| :--- | :--- | :--- | :--- |
+| **pHash** (JPEG) | 0.4506s | 0.0667s | **6.76x** |
+| **wHash** (JPEG) | 3.2750s | 0.0650s | **50.39x** |
+| **pHash** (WebP) | 0.3298s | 0.1240s | **2.66x** |
+| **wHash** (WebP) | 2.0520s | 0.1197s | **17.14x** |
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
