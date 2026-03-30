@@ -31,9 +31,9 @@ High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/
 
 ### Install from PyPI
 ```bash
-pip install libphash
+pip install python-libphash
 # or using uv
-uv add libphash
+uv add python-libphash
 ```
 
 ### Install from source
