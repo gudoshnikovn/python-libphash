@@ -150,10 +150,10 @@ Since the core logic is implemented in C and uses SIMD-accelerated decoders (SSE
 
 | Algorithm | imagehash (s) | libphash (s) | Speedup |
 | :--- | :--- | :--- | :--- |
-| **aHash** | 0.2164 | 0.0735 | **2.94x** |
-| **pHash** | 0.3211 | 0.0612 | **5.25x** |
-| **dHash** | 0.2017 | 0.0731 | **2.76x** |
-| **wHash** | 1.7832 | 0.0610 | **29.23x** |
+| **aHash** | 0.2164 | 0.1033 | **1.92x** |
+| **pHash** | 0.3211 | 0.0842 | **3.40x** |
+| **dHash** | 0.2017 | 0.1048 | **1.80x** |
+| **wHash** | 1.7832 | 0.0869 | **17.16x** |
 
 *Benchmarks ran on 200 images (JPEG).*
 
