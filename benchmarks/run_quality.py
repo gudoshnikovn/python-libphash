@@ -21,18 +21,23 @@ ALGORITHMS = [
     ("pHash", imagehash.phash, "phash", None),
     ("wHash (Fast)", imagehash.whash, "whash", "fast"),
     ("wHash (Full)", imagehash.whash, "whash", "full"),
+    ("BlockMeanHash", None, "bmh", None),
+    ("RadialHash", None, "radial_hash", None),
 ]
 
 
-def prepare_quality_dataset(base_images, output_dir, fmt="JPEG"):
-    print(f"Preparing quality dataset in {output_dir}...")
+def prepare_quality_dataset(base_images, output_dir, fmt="JPEG", mode="normal"):
+    print(f"Preparing quality dataset ({mode}) in {output_dir}...")
     ensure_dir(output_dir)
     all_files = []
     ground_truth = {}
 
+    from benchmarks.utils import generate_augmentations, generate_complex_augmentations
+    gen_func = generate_complex_augmentations if mode == "complex" else generate_augmentations
+
     with ProcessPoolExecutor() as executor:
         futures = [
-            executor.submit(generate_augmentations, p, output_dir, fmt)
+            executor.submit(gen_func, p, output_dir, fmt)
             for p in base_images
         ]
         for f in tqdm(futures, desc="Generating augmentations"):
@@ -50,12 +55,20 @@ def evaluate_quality(files, ground_truth):
 
     for p in tqdm(files, desc="Computing hashes"):
         for name, ih_func, lp_attr, mode in ALGORITHMS:
-            hashes[p][f"{name}_ih"] = get_hash_ih(p, ih_func)
+            if ih_func:
+                hashes[p][f"{name}_ih"] = get_hash_ih(p, ih_func)
             hashes[p][f"{name}_lp"] = get_hash_lp(p, lp_attr, mode=mode)
 
     n = len(files)
     y_true = []
-    dist_vectors = {f"{a[0]}_{lib}": [] for a in ALGORITHMS for lib in ["ih", "lp"]}
+    
+    # Pre-calculate algorithm keys that actually exist
+    keys = []
+    for a in ALGORITHMS:
+        if a[1]: keys.append(f"{a[0]}_ih")
+        keys.append(f"{a[0]}_lp")
+        
+    dist_vectors = {k: [] for k in keys}
 
     print(f"Comparing {n * (n - 1) // 2} pairs...")
     for i in range(n):
@@ -68,9 +81,20 @@ def evaluate_quality(files, ground_truth):
 
             for key in dist_vectors.keys():
                 h1, h2 = hashes[f1][key], hashes[f2][key]
-                if isinstance(h1, int):
+                if h1 is None or h2 is None:
+                    dist_vectors[key].append(999) # Fail distance
+                    continue
+                
+                from libphash.ph_types import Digest
+                if isinstance(h1, Digest):
+                    if "Radial" in key:
+                        dist = h1.distance_l2(h2)
+                    else:
+                        dist = h1.distance_hamming(h2)
+                elif isinstance(h1, int):
                     dist = bin(h1 ^ h2).count("1")
                 else:
+                    # For imagehash objects or other numeric types
                     dist = h1 - h2
                 dist_vectors[key].append(dist)
 
@@ -80,9 +104,17 @@ def evaluate_quality(files, ground_truth):
         dists_arr = np.array(dists)
         precision, recall, _ = precision_recall_curve(y_true_arr, -dists_arr)
 
-        # Best F1
+        # Best F1 with adaptive threshold search
         best_f1 = 0
-        for t in range(0, 20):  # typical range for hashing
+        if "Radial" in key or "Block" in key:
+            # For float distances (L2) or large digests, we check a wider range or scaled thresholds
+            # Avoid division by zero if all distances are 0
+            max_dist = dists_arr.max()
+            thresholds = np.linspace(0, max_dist if max_dist > 0 else 1.0, 50)
+        else:
+            thresholds = range(0, 25)
+
+        for t in thresholds:
             preds = (dists_arr <= t).astype(int)
             tp = ((preds == 1) & (y_true_arr == 1)).sum()
             fp = ((preds == 1) & (y_true_arr == 0)).sum()
@@ -116,6 +148,7 @@ def evaluate_quality(files, ground_truth):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run quality benchmarks.")
     parser.add_argument("--format", choices=["jpeg", "png", "webp"], default="jpeg")
+    parser.add_argument("--mode", choices=["normal", "complex"], default="normal")
     parser.add_argument("--limit", type=int, default=50, help="Base images limit")
     args = parser.parse_args()
 
@@ -127,6 +160,6 @@ if __name__ == "__main__":
         print(f"No base images in {base_dir}. Run generate_data.py first.")
     else:
         files, gt = prepare_quality_dataset(
-            base_files, base_dir, args.format.upper()
+            base_files, base_dir, args.format.upper(), mode=args.mode
         )
         evaluate_quality(files, gt)

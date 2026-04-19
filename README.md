@@ -1,6 +1,6 @@
 # python-libphash
 
-High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash), a C library for perceptual image hashing.
+High-performance Python bindings for [libphash](https://github.com/gudoshnikovn/libphash), a C library(v1.10.4) for perceptual image hashing.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -146,19 +146,16 @@ The main class for loading images and computing hashes.
 *   `compare_images(path1, path2, method)`: Returns the Hamming distance between two image files.
 
 ## Performance
-Since the core logic is implemented in C and uses SIMD-accelerated decoders (SSE4.2, AVX2, NEON), `libphash` is significantly faster than pure-Python alternatives.
+Since the core logic is implemented in C and uses SIMD-accelerated decoders (SSE4.2, AVX2, NEON), `libphash` is significantly faster than pure-Python alternatives while maintaining top-tier accuracy.
 
-*   **JPEG Decoding**: ~2.0x–6.0x faster than Pillow (TurboJPEG API).
-*   **PNG Decoding**: ~1.3x faster than Pillow (spng/libpng).
-*   **WebP Decoding**: ~2.5x faster than Pillow (Native `libwebp`).
-*   **Zero-Copy**: Uses `mmap()` to avoid kernel-user space copies.
-
-| Algorithm | imagehash (Pillow) | libphash (Native) | Speedup |
+| Algorithm | imagehash (s) | libphash (s) | Speedup |
 | :--- | :--- | :--- | :--- |
-| **pHash** (JPEG) | 0.4506s | 0.0667s | **6.76x** |
-| **wHash** (JPEG) | 3.2750s | 0.0650s | **50.39x** |
-| **pHash** (WebP) | 0.3298s | 0.1240s | **2.66x** |
-| **wHash** (WebP) | 2.0520s | 0.1197s | **17.14x** |
+| **aHash** | 0.2164 | 0.0735 | **2.94x** |
+| **pHash** | 0.3211 | 0.0612 | **5.25x** |
+| **dHash** | 0.2017 | 0.0731 | **2.76x** |
+| **wHash** | 1.7832 | 0.0610 | **29.23x** |
+
+*Benchmarks ran on 200 images (JPEG).*
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
