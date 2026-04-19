@@ -3,8 +3,8 @@
 This file serves as a high-level entry point for navigating the `python-libphash` project. 
 
 ## Versioning & Core
-- **Python Package Version**: `1.3.0`
-- **Core C Engine (`libphash`)**: `1.9.0` (tracked via `native/libphash` submodule)
+- **Python Package Version**: `1.4.1`
+- **Core C Engine (`libphash`)**: `1.10.4` (tracked via `native/libphash` submodule)
   - **Supported Hashes**:
     - **64-bit Integer Hashes**: `ahash`, `dhash`, `phash`, `whash`, `mhash`, `color_hash`.
     - **Complex Digests**: `bmh`, `color_moments_hash`, `radial_hash`.
