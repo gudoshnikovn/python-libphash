@@ -1,3 +1,8 @@
+---
+title: "Store perceptual hashes and search for near-duplicates"
+description: "Store perceptual hashes in a database or numpy and search them for near-duplicate images: what to keep with a hash, signed integers, BK-trees and indexes."
+---
+
 # Storing and searching
 
 A hash is computed once and compared many times. This page says what to store with it,

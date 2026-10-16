@@ -1,3 +1,8 @@
+---
+title: "python-libphash API reference"
+description: "The python-libphash API: hash(), ImageContext, Algorithm, Config, Digest, the batch functions and the exceptions, typed and checked by mypy and pyright."
+---
+
 # API reference
 
 Everything below is exported from `libphash`; the modules it comes from are private.

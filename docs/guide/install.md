@@ -1,3 +1,8 @@
+---
+title: "Install python-libphash: wheels for Linux, macOS, Windows"
+description: "pip install python-libphash: wheels with the C library and its JPEG, PNG and WebP decoders inside, for Linux, macOS and Windows, or a build from source."
+---
+
 # Installing
 
 ```bash

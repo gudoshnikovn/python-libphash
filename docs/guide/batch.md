@@ -1,3 +1,8 @@
+---
+title: "Hash thousands of images in parallel in Python"
+description: "Hash a directory of images on all CPU cores with hash_files() and hash_buffers(): progress, stopping, per-file errors, then grouping the duplicates."
+---
+
 # Hashing many images
 
 `hash_files()` hashes a list of files on libphash's own pool of threads, and
@@ -71,6 +76,12 @@ for (a, ha), (b, hb) in combinations(hashed, 2):
     if ph.hamming_distance(ha, hb) <= 6:
         print(a, b)
 ```
+
+The 6 is an example. libphash's
+[Choosing a threshold](https://gudoshnikovn.github.io/libphash/theory/comparing/#choosing-a-threshold)
+gives, for each algorithm, the threshold that accepts 95 % of the copies in its corpora
+and how many different pairs that lets through; `examples/threshold.py` measures it on
+pairs you label.
 
 For many more, [Storing and searching](storing.md) compares one hash with a million in a
 few milliseconds with numpy, and `examples/bk_tree.py` groups them with an index.

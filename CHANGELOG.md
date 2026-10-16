@@ -10,7 +10,19 @@ one says what a Python user observes.
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- **The package's page on PyPI leads to the documentation site.** `Homepage` is
+  <https://gudoshnikovn.github.io/python-libphash/> (the repository stays under
+  `Source`), the description names what the package finds and with which algorithms, and
+  the keywords cover near-duplicate detection, image similarity, aHash, wHash, numpy and
+  Pillow.
+- **Each page of the documentation site has its own title and description**, and a
+  preview card where a link is shared (Open Graph, Twitter) and structured data for
+  search engines. The site lists its pages for assistants in
+  [`llms.txt`](https://gudoshnikovn.github.io/python-libphash/llms.txt).
+- **Every algorithm links to its page on libphash's site**: each `Algorithm` member in
+  the API reference, the quick start's table and the settings table of "Configuring".
 
 ## [2.0.2.0] - 2026-10-15
 

@@ -1,7 +1,8 @@
 # python-libphash
 
-Perceptual image hashing in Python, with the [libphash](https://github.com/gudoshnikovn/libphash)
-C library inside.
+Perceptual image hashing in Python, with the [libphash](https://gudoshnikovn.github.io/libphash/)
+C library inside: find duplicate and near-duplicate images with pHash, dHash, aHash,
+wHash and five more algorithms.
 
 [![CI](https://github.com/gudoshnikovn/python-libphash/actions/workflows/ci.yml/badge.svg)](https://github.com/gudoshnikovn/python-libphash/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/python-libphash.svg)](https://pypi.org/project/python-libphash/)
@@ -17,6 +18,9 @@ hash for the same file on every platform, bit for bit libphash's.
 **[Documentation](https://gudoshnikovn.github.io/python-libphash/)** · the theory
 (algorithms, comparing, choosing a threshold) is on
 [libphash's site](https://gudoshnikovn.github.io/libphash/).
+
+libphash is its own C library, not pHash.org's (Debian's and Ubuntu's `libphash0`); the
+package installs as `python-libphash`, imports as `libphash`, and needs nothing but cffi.
 
 ```bash
 pip install python-libphash

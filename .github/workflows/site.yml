@@ -14,6 +14,7 @@ on:
     paths: &site-paths
       - docs/**
       - zensical.toml
+      - overrides/**
       - examples/**
       - src/libphash/**
       - README.md

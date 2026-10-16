@@ -1,3 +1,8 @@
+---
+title: "Perceptual hashing performance in Python: python-libphash"
+description: "What decides the speed of perceptual hashing from Python: measured costs of each way to load an image, threads against processes, memory and the GIL."
+---
+
 # Performance
 
 The work is done in C: decoding and hashing an image costs the same from Python as from

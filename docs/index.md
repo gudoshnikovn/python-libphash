@@ -1,4 +1,6 @@
 ---
+title: "python-libphash: perceptual image hashing for Python"
+description: "Perceptual image hashing for Python: pHash, dHash, aHash, wHash and five more algorithms in C, to find duplicate and near-duplicate images quickly."
 hide:
   - navigation
 ---
@@ -18,10 +20,15 @@ copy = ph.hash("photo_copy.jpg")
 ph.hamming_distance(original, copy)        # bits that differ: 0 for a copy
 ```
 
-The package computes nine algorithms in C, decodes JPEG, PNG and WebP with libraries
-linked into the wheel, and gives the same hash for the same file on Linux, macOS and
-Windows, on x86-64 and arm64. Its hashes are libphash's, bit for bit: a collection can be
-hashed partly from C and partly from Python.
+The package computes nine algorithms in C (pHash, dHash, aHash, wHash, BMH, mHash,
+Radial, ColorHash and ColorMoments), decodes JPEG, PNG and WebP with libraries linked
+into the wheel, and gives the same hash for the same file on Linux, macOS and Windows, on
+x86-64 and arm64. Its hashes are libphash's, bit for bit: a collection can be hashed
+partly from C and partly from Python.
+
+It installs as `python-libphash` and imports as `libphash`. libphash is its own C
+library, not pHash.org's (which Debian and Ubuntu package as `libphash0`), and the
+package depends on neither that library nor `imagehash`, numpy or OpenCV.
 
 <div class="grid cards" markdown>
 

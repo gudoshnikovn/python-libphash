@@ -1,3 +1,8 @@
+---
+title: "Handling corrupt and unsupported images in python-libphash"
+description: "How python-libphash reports missing, corrupt and unsupported images: one exception tree, each class also a built-in exception, with its C error code."
+---
+
 # Handling errors
 
 Every failure of the library raises a subclass of `PhashError`, chosen by the C error

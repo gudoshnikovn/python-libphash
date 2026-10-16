@@ -1,0 +1,118 @@
+{#-
+  The site's additions to the theme: the page's own title, social previews and
+  structured data. Every page carries `title` and `description` front matter
+  (tests/test_docs.py holds each to its length and to being the only one with it); the
+  title is the whole <title>, since the site's name is in it where it fits, not appended.
+-#}
+{% extends "base.html" %}
+
+{% block htmltitle %}
+  {% if page and page.meta and page.meta.title %}
+    <title>{{ page.meta.title }}</title>
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block extrahead %}
+  {#- The 404 page answers every missing address: it has no address of its own to preview
+      or describe, and is kept out of the index. -#}
+  {% if not (page and page.canonical_url) %}
+    <meta name="robots" content="noindex">
+  {% else %}
+  {#- The front page is told by its address: Zensical leaves `page.is_homepage` unset. -#}
+  {% set home = page.canonical_url == config.site_url %}
+  {% set title = page.meta.title | d(config.site_name, true) %}
+  {% set description = page.meta.description | d(config.site_description, true) %}
+  {% set image = config.site_url ~ "assets/social.png" %}
+  {% set image_alt = "python-libphash: perceptual image hashing for Python" %}
+  <meta property="og:type" content="{{ 'website' if home else 'article' }}">
+  <meta property="og:site_name" content="{{ config.site_name }}">
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:url" content="{{ page.canonical_url }}">
+  <meta property="og:image" content="{{ image }}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ image_alt }}">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ title }}">
+  <meta name="twitter:description" content="{{ description }}">
+  <meta name="twitter:image" content="{{ image }}">
+  <meta name="twitter:image:alt" content="{{ image_alt }}">
+  {#- The site, named for search results, and on the front page the package: what it
+      is written in and for, where its code and releases are, and the C library it is
+      built on. Every other page is an article of the site, with its place in it. -#}
+  {% set site = {
+    "@type": "WebSite",
+    "@id": config.site_url ~ "#website",
+    "name": config.site_name,
+    "url": config.site_url,
+    "description": config.site_description,
+    "inLanguage": "en",
+  } %}
+  {% if home %}
+    {% set data = {
+      "@context": "https://schema.org",
+      "@graph": [
+        site,
+        {
+          "@type": "SoftwareSourceCode",
+          "@id": config.site_url ~ "#software",
+          "name": "python-libphash",
+          "description": description,
+          "url": config.site_url,
+          "codeRepository": config.repo_url,
+          "programmingLanguage": [
+            {"@type": "ComputerLanguage", "name": "Python"},
+            {"@type": "ComputerLanguage", "name": "C"},
+          ],
+          "runtimePlatform": "CPython 3.10 or later",
+          "operatingSystem": "Linux, macOS, Windows",
+          "license": "https://spdx.org/licenses/MIT.html",
+          "keywords": "perceptual hash, image hashing, duplicate images, near-duplicate detection, pHash, dHash, aHash, wHash",
+          "author": {"@type": "Person", "name": "Nikolay Gudoshnikov", "alternateName": "gudoshnikovn", "url": "https://github.com/gudoshnikovn"},
+          "sameAs": [config.repo_url, "https://pypi.org/project/python-libphash/"],
+          "isBasedOn": {
+            "@type": "SoftwareSourceCode",
+            "name": "libphash",
+            "url": "https://gudoshnikovn.github.io/libphash/",
+            "codeRepository": "https://github.com/gudoshnikovn/libphash",
+            "programmingLanguage": {"@type": "ComputerLanguage", "name": "C"},
+          },
+          "isPartOf": {"@id": config.site_url ~ "#website"},
+        },
+      ],
+    } %}
+  {% else %}
+    {% set data = {
+      "@context": "https://schema.org",
+      "@graph": [
+        site,
+        {
+          "@type": "TechArticle",
+          "headline": title,
+          "description": description,
+          "url": page.canonical_url,
+          "mainEntityOfPage": page.canonical_url,
+          "inLanguage": "en",
+          "image": image,
+          "isPartOf": {"@id": config.site_url ~ "#website"},
+          "about": {"@id": config.site_url ~ "#software"},
+          "author": {"@type": "Person", "name": "Nikolay Gudoshnikov", "alternateName": "gudoshnikovn", "url": "https://github.com/gudoshnikovn"},
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": config.site_name, "item": config.site_url},
+            {"@type": "ListItem", "position": 2, "name": page.title | striptags, "item": page.canonical_url},
+          ],
+        },
+      ],
+    } %}
+  {% endif %}
+  <script type="application/ld+json">{{ data | tojson }}</script>
+  {% endif %}
+{% endblock %}

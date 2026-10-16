@@ -1,3 +1,8 @@
+---
+title: "python-libphash versions and hash compatibility"
+description: "How python-libphash versions X.Y.Z.N follow libphash, which releases change hash values, when stored hashes stay comparable, and which versions get fixes."
+---
+
 # Versions
 
 The version has four numbers, `X.Y.Z.N`:

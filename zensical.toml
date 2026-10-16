@@ -56,6 +56,8 @@ nav = [
 extra_css = ["stylesheets/site.css"]
 
 [project.theme]
+# The page's own title, social previews and structured data (overrides/main.html).
+custom_dir = "overrides"
 language = "en"
 logo = "assets/logo.svg"
 favicon = "assets/logo.svg"
@@ -127,6 +129,25 @@ pymdownx.superfences = {}
 pymdownx.tabbed.alternate_style = true
 pymdownx.tabbed.combine_header_slug = true
 pymdownx.tasklist.custom_checkbox = true
+
+# llms.txt at the site's root: the pages as Markdown, listed by section with their
+# descriptions, for assistants and AI search that read a site through it, and every page
+# in one file, llms-full.txt.
+[project.plugins.llmstxt]
+markdown_description = """
+python-libphash is the Python binding of libphash, a perceptual image hashing library in
+C: nine algorithms (pHash, dHash, aHash, wHash, BMH, mHash, Radial, ColorHash,
+ColorMoments) that find duplicate and near-duplicate images. It installs as
+`python-libphash` and imports as `libphash`. How each algorithm works, how to compare
+hashes and how to choose a threshold is on libphash's site,
+https://gudoshnikovn.github.io/libphash/, which this site links rather than repeats.
+"""
+full_output = "llms-full.txt"
+
+[project.plugins.llmstxt.sections]
+"Guide" = ["index.md", "guide/*.md"]
+"API reference" = ["api/*.md"]
+"Project" = ["project/*.md"]
 
 # The API reference, from the docstrings of the package's source.
 [project.plugins.mkdocstrings.handlers.python]

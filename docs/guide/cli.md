@@ -1,3 +1,8 @@
+---
+title: "Find duplicate images from the command line: libphash CLI"
+description: "The libphash command: print perceptual hashes of files, compare two images, and group near-duplicate images in a folder, with no code to write."
+---
+
 # Command line
 
 The package installs a command, `libphash`; `python -m libphash` is the same command

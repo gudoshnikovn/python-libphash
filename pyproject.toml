@@ -33,7 +33,19 @@ license-files = [
   "native/libphash/vendor/zlib-ng/LICENSE.md",
 ]
 authors = [{ name = "gudoshnikovn", email = "gudoshnikovna@gmail.com" }]
-keywords = ["perceptual hash", "phash", "image hashing", "duplicate images", "dhash"]
+keywords = [
+  "perceptual hash",
+  "image hashing",
+  "duplicate images",
+  "near-duplicate detection",
+  "image similarity",
+  "phash",
+  "dhash",
+  "ahash",
+  "whash",
+  "numpy",
+  "pillow",
+]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -61,7 +73,7 @@ dependencies = ["cffi>=2.0"]
 libphash = "libphash._cli:main"
 
 [project.urls]
-Homepage = "https://github.com/gudoshnikovn/python-libphash"
+Homepage = "https://gudoshnikovn.github.io/python-libphash/"
 Source = "https://github.com/gudoshnikovn/python-libphash"
 Issues = "https://github.com/gudoshnikovn/python-libphash/issues"
 Changelog = "https://github.com/gudoshnikovn/python-libphash/blob/main/CHANGELOG.md"

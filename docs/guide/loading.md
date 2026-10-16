@@ -1,3 +1,8 @@
+---
+title: "Hash images from files, bytes, numpy, Pillow and OpenCV"
+description: "Load images for perceptual hashing from paths, bytes, file objects, numpy arrays, Pillow images and OpenCV frames, without a copy where possible."
+---
+
 # Loading images
 
 `ph.hash()` and `ImageContext.load()` take any of these sources and tell them apart by
@@ -30,7 +35,9 @@ assert ph.hash("photo.jpg") == ph.hash(data) == ph.hash(io.BytesIO(data))
 libphash decodes JPEG with libjpeg-turbo, PNG with libpng and WebP with libwebp; BMP,
 GIF (the first frame), TGA, PSD, HDR, PIC and PNM with stb_image. A file is decoded as
 it is displayed: the EXIF orientation of a JPEG or PNG is applied (`Config.auto_orient`),
-and transparency is composited onto gray (`Config.alpha_mode`).
+and transparency is composited onto gray (`Config.alpha_mode`). libphash's
+[Image preparation](https://gudoshnikovn.github.io/libphash/theory/preparation/) describes each step between the file and the
+hash.
 
 A load fails with an exception that says why ([Handling errors](errors.md)): a missing
 file is a `FileNotFoundError`, a file that is not an image an `UnsupportedFormatError`, a

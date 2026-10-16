@@ -1,3 +1,8 @@
+---
+title: "Perceptual hash settings in python-libphash"
+description: "Every setting of a perceptual hash in python-libphash: EXIF orientation, transparency, grayscale, size limits and each algorithm's parameters."
+---
+
 # Configuring
 
 Every setting of a libphash context is a field of one immutable `Config`. Its defaults
@@ -32,18 +37,21 @@ hashes.
 | `gray_weights` | `(38, 75, 15)` | the gray algorithms | relative R, G, B weights of the gray conversion |
 | `max_pixels` | `268435456` | loading | the largest image accepted; `0` leaves only the fixed limits |
 | `decode_scale` | `1` | JPEG | decode at 1/1, 1/2, 1/4 or 1/8 of the resolution: faster, hashes move |
-| `phash_dct_size` | `32` | pHash | side of the DCT grid |
-| `phash_reduction_size` | `8` | pHash | side of the low-frequency block, 4 to 8; the hash has its square in bits |
-| `whash_mode` | `"fast"` | wHash | `"fast"` (one Haar level) or `"full"` (ImageHash's scale) |
-| `whash_remove_max_haar_ll` | `False` | wHash | zero the coarsest coefficient, as ImageHash's option does |
-| `bmh_block_size` | `16` | BMH | side of the block grid, 2 to 32; the digest has its square in bits |
-| `mhash_alpha`, `mhash_level`, `mhash_size` | `2.0`, `1.0`, `512` | mHash | the Marr–Hildreth kernel's scale and the normalization size |
-| `radial_projections`, `radial_samples`, `radial_sigma` | `180`, `128`, `3.5` | Radial | angles, points per line, blur before the projections |
-| `gamma` | `1.0` | Radial | the exponent applied to the normalized pixels |
+| `phash_dct_size` | `32` | [pHash](https://gudoshnikovn.github.io/libphash/theory/phash/) | side of the DCT grid |
+| `phash_reduction_size` | `8` | [pHash](https://gudoshnikovn.github.io/libphash/theory/phash/) | side of the low-frequency block, 4 to 8; the hash has its square in bits |
+| `whash_mode` | `"fast"` | [wHash](https://gudoshnikovn.github.io/libphash/theory/whash/) | `"fast"` (one Haar level) or `"full"` (ImageHash's scale) |
+| `whash_remove_max_haar_ll` | `False` | [wHash](https://gudoshnikovn.github.io/libphash/theory/whash/) | zero the coarsest coefficient, as ImageHash's option does |
+| `bmh_block_size` | `16` | [BMH](https://gudoshnikovn.github.io/libphash/theory/bmh/) | side of the block grid, 2 to 32; the digest has its square in bits |
+| `mhash_alpha`, `mhash_level`, `mhash_size` | `2.0`, `1.0`, `512` | [mHash](https://gudoshnikovn.github.io/libphash/theory/mhash/) | the Marr–Hildreth kernel's scale and the normalization size |
+| `radial_projections`, `radial_samples`, `radial_sigma` | `180`, `128`, `3.5` | [Radial](https://gudoshnikovn.github.io/libphash/theory/radial/) | angles, points per line, blur before the projections |
+| `gamma` | `1.0` | [Radial](https://gudoshnikovn.github.io/libphash/theory/radial/) | the exponent applied to the normalized pixels |
 
-The API reference of [`Config`](../api/config.md) gives each field's range, and
-libphash's [Configuring a context](https://gudoshnikovn.github.io/libphash/guide/configuring/)
-and the algorithm pages what each one changes.
+The API reference of [`Config`](../api/config.md) gives each field's range; what each
+one changes is on libphash's site:
+[Configuring a context](https://gudoshnikovn.github.io/libphash/guide/configuring/),
+[Image preparation](https://gudoshnikovn.github.io/libphash/theory/preparation/) for
+orientation, transparency and the gray conversion, and the algorithm pages linked in the
+table.
 
 A digest's size follows from the settings, without an image:
 

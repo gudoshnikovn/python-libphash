@@ -1,3 +1,8 @@
+---
+title: "Perceptual hashing with threads, processes and asyncio"
+description: "Run python-libphash in threads, process pools and asyncio: every call releases the GIL, what is safe to share, and free-threaded Python 3.14t."
+---
+
 # Threads and processes
 
 ## What runs in parallel

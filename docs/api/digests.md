@@ -1,3 +1,8 @@
+---
+title: "Digest, Hamming distance and similarity: python-libphash API"
+description: "API reference of python-libphash's Digest and comparisons: Hamming distance, similarity, peak correlation, L2 distance and the hexadecimal text form."
+---
+
 # Digests and comparison
 
 ::: libphash.Digest

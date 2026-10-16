@@ -1,3 +1,8 @@
+---
+title: "Perceptual image hashing in Python: quick start"
+description: "Install python-libphash, hash an image in one line, compare two hashes by Hamming distance and choose among nine perceptual hash algorithms."
+---
+
 # Quick start
 
 ```bash
@@ -37,13 +42,17 @@ r = ph.hash("photo.jpg", "radial")         # a Digest
 r.similarity(ph.hash("photo_rotated.jpg", "radial"))
 ```
 
-| Algorithm | Result | Compare with |
-|---|---|---|
-| `AHASH`, `DHASH`, `PHASH`, `WHASH` | 64-bit `int` | `hamming_distance()`, `similarity()` |
-| `BMH`, `MHASH` | `Digest` of bits | `Digest.hamming_distance()`, `Digest.similarity()` |
-| `RADIAL` | `Digest` of coefficients | `Digest.similarity()` (peak correlation) |
-| `COLOR_HASH` | `Digest`, a histogram | `Digest.similarity()` (histogram intersection) |
-| `COLOR_MOMENTS` | `Digest`, 16-bit features | `Digest.l2_distance()` |
+| Algorithm | How it works | Result | Compare with |
+|---|---|---|---|
+| `AHASH` | [aHash](https://gudoshnikovn.github.io/libphash/theory/ahash/): an 8×8 thumbnail against its mean | 64-bit `int` | `hamming_distance()`, `similarity()` |
+| `DHASH` | [dHash](https://gudoshnikovn.github.io/libphash/theory/dhash/): each cell against its neighbor | 64-bit `int` | `hamming_distance()`, `similarity()` |
+| `PHASH` | [pHash](https://gudoshnikovn.github.io/libphash/theory/phash/): the coarsest patterns of the DCT | 64-bit `int` | `hamming_distance()`, `similarity()` |
+| `WHASH` | [wHash](https://gudoshnikovn.github.io/libphash/theory/whash/): the Haar wavelet's average | 64-bit `int` | `hamming_distance()`, `similarity()` |
+| `BMH` | [BMH](https://gudoshnikovn.github.io/libphash/theory/bmh/): block means against their median | `Digest` of bits | `Digest.hamming_distance()`, `Digest.similarity()` |
+| `MHASH` | [mHash](https://gudoshnikovn.github.io/libphash/theory/mhash/): edges through the Marr–Hildreth filter | `Digest` of bits | `Digest.hamming_distance()`, `Digest.similarity()` |
+| `RADIAL` | [Radial](https://gudoshnikovn.github.io/libphash/theory/radial/): variance along lines through the center | `Digest` of coefficients | `Digest.similarity()` (peak correlation) |
+| `COLOR_HASH` | [ColorHash](https://gudoshnikovn.github.io/libphash/theory/color-hash/): a histogram of coarse colors | `Digest`, a histogram | `Digest.similarity()` (histogram intersection) |
+| `COLOR_MOMENTS` | [ColorMoments](https://gudoshnikovn.github.io/libphash/theory/color-moments/): mean, spread and skew per channel | `Digest`, 16-bit features | `Digest.l2_distance()` |
 
 A digest refuses a comparison that does not fit its kind with `DigestKindError`, rather
 than return a number that means nothing. Which algorithm suits which use is measured on

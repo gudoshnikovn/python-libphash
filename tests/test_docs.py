@@ -107,3 +107,43 @@ def test_command_line_prints_what_the_page_shows(
     main(argv)
     # The page writes paths with "/", the command with the platform's separator.
     assert stream.getvalue() == output.replace("album/", "album" + os.sep)
+
+
+FRONT_MATTER = re.compile(r"\A---\n(.*?)^---\n", re.MULTILINE | re.DOTALL)
+SITE_PAGES = sorted((ROOT / "docs").rglob("*.md"))
+
+
+def front_matter(page: Path) -> dict[str, str]:
+    """Return the page's ``key: "value"`` lines of front matter."""
+    found = FRONT_MATTER.match(page.read_text(encoding="utf-8"))
+    assert found, f"{page.name} has no front matter"
+    return dict(re.findall(r'^(\w+): "(.*)"$', found.group(1), re.MULTILINE))
+
+
+@pytest.mark.parametrize(
+    "page", SITE_PAGES, ids=lambda p: p.relative_to(ROOT / "docs").as_posix()
+)
+def test_page_has_a_title_and_description_for_search(page: Path) -> None:
+    # The title is the page's whole <title>, which a search result cuts at about 60
+    # characters; the description is its snippet, cut at about 160 and thin under 120.
+    meta = front_matter(page)
+    assert 10 <= len(meta.get("title", "")) <= 60
+    assert 120 <= len(meta.get("description", "")) <= 160
+
+
+def test_titles_and_descriptions_are_each_one_page_s() -> None:
+    # Two pages with one title or one snippet compete for one search, and one loses.
+    metas = [front_matter(p) for p in SITE_PAGES]
+    for key in ("title", "description"):
+        values = [m[key] for m in metas]
+        assert len(set(values)) == len(values), key
+
+
+def test_preview_image_is_the_size_cards_show() -> None:
+    # PNG's IHDR: width and height, big-endian, at bytes 16 to 24.
+    head = (ROOT / "docs" / "assets" / "social.png").read_bytes()[:24]
+    assert head[:8] == b"\x89PNG\r\n\x1a\n"
+    assert (int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")) == (
+        1200,
+        630,
+    )

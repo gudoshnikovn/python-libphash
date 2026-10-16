@@ -1,3 +1,8 @@
+---
+title: "Perceptual hashing examples in Python: duplicates, search"
+description: "Runnable Python examples: find duplicate images, hash distance, SQLite storage, nearest hashes with numpy, BK-tree groups and choosing a threshold."
+---
+
 # Examples
 
 The scripts in [`examples/`](https://github.com/gudoshnikovn/python-libphash/tree/main/examples)
@@ -61,6 +66,11 @@ and the tests require both to print the same.
 ```
 
 ## Choosing a threshold
+
+libphash's
+[Choosing a threshold](https://gudoshnikovn.github.io/libphash/theory/comparing/#choosing-a-threshold)
+gives each algorithm's threshold on its corpora; the script measures it on your own
+pairs.
 
 ```python
 --8<-- "examples/threshold.py"
