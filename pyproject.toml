@@ -89,7 +89,7 @@ dev = ["pytest", "pytest-randomly", "pytest-timeout", "hypothesis", "psutil", "c
 # between releases: the version is pinned, and raised in a commit of its own. It needs
 # Python 3.11, so the group is empty on 3.10.
 docs = [
-  "zensical==0.0.68; python_version >= '3.11'",
+  "zensical==0.0.70; python_version >= '3.11'",
   "mkdocstrings-python; python_version >= '3.11'",
   # Reads the `#:` comments above attributes (Config's fields) as their docstrings.
   "griffe-sphinx; python_version >= '3.11'",
