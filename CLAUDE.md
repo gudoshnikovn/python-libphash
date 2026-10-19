@@ -82,7 +82,7 @@ Code, comments, docstrings and tracked documentation are in English.
 
 ## Project workflow
 
-The backlog lives in `tmp/tasks/` (Russian-language, ignored by git): `tmp/tasks/README.md` lists the tasks in order with their status and a log of the user's decisions — **read it before starting work** and update it when a task starts or finishes. Tasks marked ⚠ need the approach agreed with the user before any code is written.
+The backlog is the repository's GitHub issues (in English, with the repository's labels): **read the open issues before starting work**, check for a duplicate before opening one, and record on the issue what was decided and done. A task whose approach is not settled is agreed with the user before any code is written.
 
 **A task is handed over clean:** when the work is done (checks passed, commits made), run `make clean` and leave `git status` with nothing but what the user is meant to review. Not `make clean-all`: it deletes the built extension, and the editable install cannot import `libphash` until `make rebuild`.
 
@@ -97,4 +97,4 @@ Commits and tags are signed with SSH (configured in `.git/config`), author `gudo
 - Tracked text, commit messages included, contains no task IDs (`T-05`, "task 7"), no paths into `tmp/`, and no "pre-release" or "development build".
 - Only `CHANGELOG.md` and `MIGRATION.md` compare a release with the previous one; check every such comparison against the tag (`git show v1.4.1:<path>`), not against branch history or memory.
 - When a value or a name changes, `git grep` for the old one across the tree and update every copy.
-- How a decision was reached belongs in the commit message body and in `tmp/tasks/`, not in the tree.
+- How a decision was reached belongs in the commit message body and on the issue, not in the tree.
