@@ -37,6 +37,7 @@ uv run --no-project python tools/sanitizers.py build address   # or: thread
 ```
 
 `uv sync` without `--inexact` removes packages that are not in the lock file from `.venv`.
+The `Makefile` holds shortcuts for these commands (`make help`); `make clean` deletes caches, reports, `dist/` and `mutants/`, `make clean-all` also `build/` and the built extension (`make rebuild` restores them), never `.venv*`, `native/` or `tmp/`.
 After a change to the C side or to `tools/`, rebuild with `uv sync --all-extras --inexact --reinstall-package python-libphash`, then regenerate the stub with `uv run python tools/stub.py`.
 
 How the extension is built:

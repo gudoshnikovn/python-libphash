@@ -29,6 +29,11 @@ python-libphash`.
 `uv sync` without `--inexact` removes from `.venv` the packages the lock file does not
 list.
 
+With make, the `Makefile` runs these commands by short names (`make help` lists them):
+`make check` runs what CI checks below, `make clean` deletes caches, reports, `dist/`
+and mutmut's `mutants/`, and `make clean-all` also deletes the C build and the built
+extension, which `make rebuild` makes again. Neither touches `.venv` or the submodule.
+
 ## Before opening a pull request
 
 Each of these must pass; CI runs them all on every pull request:
