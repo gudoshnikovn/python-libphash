@@ -84,6 +84,8 @@ Code, comments, docstrings and tracked documentation are in English.
 
 The backlog lives in `tmp/tasks/` (Russian-language, ignored by git): `tmp/tasks/README.md` lists the tasks in order with their status and a log of the user's decisions — **read it before starting work** and update it when a task starts or finishes. Tasks marked ⚠ need the approach agreed with the user before any code is written.
 
+**A task is handed over clean:** when the work is done (checks passed, commits made), run `make clean` and leave `git status` with nothing but what the user is meant to review. Not `make clean-all`: it deletes the built extension, and the editable install cannot import `libphash` until `make rebuild`.
+
 Branching: a `release/vX.Y.Z.N` branch is cut from `main`; each task gets its own `feature/...` branch. **History is linear — no merge commits.** A finished feature branch is rebased onto the release branch and integrated with `git merge --ff-only`; the release branch reaches `main` the same way, by explicit user decision only. External contributors follow `CONTRIBUTING.md` (fork, branch off `main`, PR) — a separate flow; do not mix the two.
 
 Commits and tags are signed with SSH (configured in `.git/config`), author `gudoshnikovn <gudoshnikovna@gmail.com>`. Commit messages carry no `Co-Authored-By` trailer.
