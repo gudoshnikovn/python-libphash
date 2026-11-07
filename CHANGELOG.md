@@ -10,8 +10,23 @@ one says what a Python user observes.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.0.3.0] - 2026-11-07
+
+Bundles libphash 2.0.3. The API and the hash values are those of 2.0.2.0.
+
+### Fixed
+
+- **An extension built from the sdist on glibc 2.38 or later loads on an older glibc.**
+  libphash 2.0.2 imported `__isoc23_sscanf` and `__isoc23_strtoll` (`GLIBC_2.38`) when
+  compiled there, so such a build, copied to a system like Debian 12, failed to import
+  with "version `GLIBC_2.38' not found". The wheels on PyPI, built on manylinux_2_28,
+  are not affected.
+
 ### Changed
 
+- **The bundled libjpeg-turbo is 3.2.1.**
 - **The package's page on PyPI leads to the documentation site.** `Homepage` is
   <https://gudoshnikovn.github.io/python-libphash/> (the repository stays under
   `Source`), the description names what the package finds and with which algorithms, and
@@ -221,7 +236,8 @@ repository.
 | 1.1.0 | 1.3.0 |
 | 1.0.3 | 1.2.0 |
 
-[Unreleased]: https://github.com/gudoshnikovn/python-libphash/compare/v2.0.2.0...HEAD
+[Unreleased]: https://github.com/gudoshnikovn/python-libphash/compare/v2.0.3.0...HEAD
+[2.0.3.0]: https://github.com/gudoshnikovn/python-libphash/compare/v2.0.2.0...v2.0.3.0
 [2.0.2.0]: https://github.com/gudoshnikovn/python-libphash/compare/v2.0.1.1...v2.0.2.0
 [2.0.1.1]: https://github.com/gudoshnikovn/python-libphash/compare/v2.0.1.0...v2.0.1.1
 [2.0.1.0]: https://github.com/gudoshnikovn/python-libphash/compare/v1.4.1...v2.0.1.0

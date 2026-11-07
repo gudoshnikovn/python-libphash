@@ -1,7 +1,8 @@
 """Find the pictures that appear more than once among many files.
 
 Hashes every file with pHash on all CPUs, prints each hash as it would be stored, then
-every pair within a threshold, closest first. The threshold is the most bits two hashes
+every pair within a threshold, closest first, and the groups those pairs join the files
+into. The threshold is the most bits two hashes
 of one picture may differ in; measure it on your own images (``threshold.py``). The twin
 of libphash's ``examples/find_duplicates.c``: the same files give the same output. Run::
 
@@ -9,12 +10,16 @@ of libphash's ``examples/find_duplicates.c``: the same files give the same outpu
 
 prints::
 
-    # algorithm=phash version=2000002 native-jpeg=1
+    # algorithm=phash version=2000003 native-jpeg=1
     7eb66192bc394247  native/libphash/tests/data/photo.jpeg
     7eb66192bc394247  native/libphash/tests/data/photo_copy.jpeg
     0100000101000139  native/libphash/tests/data/photo.png
      0 bits  native/libphash/tests/data/photo.jpeg  native/libphash/tests/data/photo_copy.jpeg
     pairs within 7 bits: 1
+    group 1: 2 files, widest pair 0 bits
+      native/libphash/tests/data/photo.jpeg
+      native/libphash/tests/data/photo_copy.jpeg
+    groups: 1
 """
 
 from __future__ import annotations
@@ -23,6 +28,14 @@ import sys
 from itertools import combinations
 
 import libphash as ph
+
+
+def find(parent: list[int], i: int) -> int:
+    """Return the group of file ``i``: the file its chain of parents ends at, the first."""
+    while parent[i] != i:
+        parent[i] = parent[parent[i]]
+        i = parent[i]
+    return i
 
 
 def main(argv: list[str]) -> int:
@@ -58,13 +71,35 @@ def main(argv: list[str]) -> int:
 
     # Every pair compared once: n * (n - 1) / 2 Hamming distances.
     pairs = [
-        (ph.hamming_distance(ha, hb), a, b)
-        for (a, ha), (b, hb) in combinations(hashed, 2)
-        if ph.hamming_distance(ha, hb) <= max_bits
+        (distance, i, j)
+        for i, j in combinations(range(len(hashed)), 2)
+        if (distance := ph.hamming_distance(hashed[i][1], hashed[j][1])) <= max_bits
     ]
-    for distance, a, b in sorted(pairs, key=lambda p: p[0]):
-        print(f"{distance:2d} bits  {a}  {b}")
+    for distance, i, j in sorted(pairs, key=lambda p: p[0]):
+        print(f"{distance:2d} bits  {hashed[i][0]}  {hashed[j][0]}")
     print(f"pairs within {max_bits} bits: {len(pairs)}")
+
+    # Each pair joins the groups of its two files, so a group holds every file a chain of
+    # pairs connects, and is known by its first file: the groups come in the order of
+    # their first files. Two files of one group may be further apart than the threshold;
+    # its widest pair says how far.
+    parent = list(range(len(hashed)))
+    for _, i, j in pairs:
+        a, b = find(parent, i), find(parent, j)
+        parent[max(a, b)] = min(a, b)
+    groups: dict[int, list[int]] = {}
+    for i in range(len(hashed)):
+        groups.setdefault(find(parent, i), []).append(i)
+    copies = [group for group in groups.values() if len(group) > 1]
+    for number, group in enumerate(copies, 1):
+        widest = max(
+            ph.hamming_distance(hashed[i][1], hashed[j][1])
+            for i, j in combinations(group, 2)
+        )
+        print(f"group {number}: {len(group)} files, widest pair {widest} bits")
+        for i in group:
+            print(f"  {hashed[i][0]}")
+    print(f"groups: {len(copies)}")
     return 0
 
 

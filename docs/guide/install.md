@@ -37,9 +37,9 @@ To see what an installed wheel carries:
 ```python
 import libphash as ph
 
-print(ph.__version__)            # 2.0.2.0
-print(ph.libphash_version())     # 2.0.2
-print(ph.build_info())           # version=2.0.2 jpeg=libjpeg-turbo png=libpng ...
+print(ph.__version__)            # 2.0.3.0
+print(ph.libphash_version())     # 2.0.3
+print(ph.build_info())           # version=2.0.3 jpeg=libjpeg-turbo png=libpng ...
 ```
 
 Each wheel also carries a software bill of materials, `python_libphash-*.dist-info/sboms/`,
@@ -80,7 +80,7 @@ keep the hashes of a stored collection comparable while still receiving fixes of
 binding, pin the first three:
 
 ```bash
-pip install "python-libphash==2.0.2.*"
+pip install "python-libphash==2.0.3.*"
 ```
 
 [Versions](../project/versions.md) explains the scheme.

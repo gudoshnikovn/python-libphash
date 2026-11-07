@@ -27,7 +27,7 @@ To keep a stored collection comparable while still receiving the binding's fixes
 the first three numbers:
 
 ```bash
-pip install "python-libphash==2.0.2.*"
+pip install "python-libphash==2.0.3.*"
 ```
 
 To see what is installed:
@@ -35,8 +35,8 @@ To see what is installed:
 ```python
 import libphash as ph
 
-ph.__version__            # '2.0.2.0'
-ph.libphash_version()     # '2.0.2'
+ph.__version__            # '2.0.3.0'
+ph.libphash_version()     # '2.0.3'
 ```
 
 ## Support

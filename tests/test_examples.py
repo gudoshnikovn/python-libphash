@@ -123,3 +123,23 @@ def test_python_twin_prints_what_c_prints(
         assert sorted(python.stdout.splitlines()) == sorted(c.stdout.splitlines())
     else:
         assert python.stdout == c.stdout
+
+
+@pytest.mark.parametrize("max_bits", [0, 7, 15])
+def test_find_duplicates_groups_as_c_does(max_bits: int, c_examples: Path) -> None:
+    # Every fixture, some of which fail to load, joined by pairs into several groups,
+    # some through chains of pairs: the groups are printed exactly as C prints them.
+    files = sorted(str(p) for p in c_reference.DATA.rglob("*") if p.is_file())
+    args = [str(max_bits), *files]
+    python = run([sys.executable, str(ROOT / "examples" / "find_duplicates.py"), *args])
+    c = run([str(c_example(c_examples, "find_duplicates")), *args])
+    assert python.returncode == c.returncode == 0, python.stderr + c.stderr
+    py_lines, c_lines = python.stdout.splitlines(), c.stdout.splitlines()
+    # Pairs of equal distance may come in either order; the groups after them may not.
+    assert sorted(py_lines) == sorted(c_lines)
+    tail = f"pairs within {max_bits} bits:"
+    assert (
+        py_lines[[line.startswith(tail) for line in py_lines].index(True) :]
+        == (c_lines[[line.startswith(tail) for line in c_lines].index(True) :])
+    )
+    assert any(line.startswith("group 2:") for line in c_lines)
