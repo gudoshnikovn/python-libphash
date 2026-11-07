@@ -8,7 +8,7 @@ the C side read, are written once into a working directory. Nothing is fetched.
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import os
 import platform
 import subprocess
@@ -125,7 +125,7 @@ def environment(effort: Effort) -> dict[str, object]:
     if threaded:
         python += f" free-threaded (GIL {'on' if gil_enabled() else 'off'})"
     return {
-        "date": datetime.datetime.now(datetime.timezone.utc).date().isoformat(),
+        "date": dt.datetime.now(dt.timezone.utc).date().isoformat(),
         "machine": f"{_processor()}, {os.cpu_count()} CPUs, "
         f"{psutil.virtual_memory().total / 2**30:.0f} GiB",
         "os": platform.platform(),
