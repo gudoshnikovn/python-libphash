@@ -34,7 +34,8 @@ def main(argv: list[str]) -> int:
         return 1
     path = Path(argv[1])
     data = path.read_bytes()
-    with Image.open(path) as opened:
+    opened = Image.open(path)
+    with opened:
         image = opened.convert("RGB")
     sources: dict[str, ph.Source] = {
         "path": path,

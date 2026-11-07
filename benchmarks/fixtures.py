@@ -53,7 +53,8 @@ class Image:
         import numpy as np  # noqa: PLC0415 -- optional, as in the binding
         from PIL import Image as PILImage  # noqa: PLC0415 -- optional
 
-        with PILImage.open(self.path) as img:
+        img = PILImage.open(self.path)
+        with img:
             return np.ascontiguousarray(np.asarray(img.convert("RGB")))
 
     @cached_property
