@@ -220,6 +220,10 @@ def test_no_growth(step: Callable[[], None]) -> None:
     rss_growth = _growth(step, lambda: psutil.Process().memory_info().rss)
     tracemalloc.start()
     try:
+        # A block allocated before tracing is freed untraced, and the block that
+        # replaces it in a cache or a free list is traced: the first steps under
+        # tracing grow the traced memory without leaking, so they are not measured.
+        _repeat(step)
         python_growth = _growth(step, _traced)
     finally:
         tracemalloc.stop()
